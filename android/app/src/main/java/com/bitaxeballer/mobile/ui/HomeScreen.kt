@@ -128,8 +128,11 @@ fun HomeScreen(
                             Text(d.label?.ifBlank { d.ip } ?: d.ip, fontWeight = FontWeight.SemiBold)
                             Text("IP: ${d.ip}")
                             Text("Status: ${if (d.online) "Online" else "Offline"}")
-                            Text("Hashrate: ${d.hashrate ?: 0.0}")
-                            Text("ASIC: ${d.asicTemp ?: 0.0}°C · VR: ${d.vrTemp ?: 0.0}°C")
+                            Text("Hashrate: ${"%.2f".format(d.hashrate ?: 0.0)} GH/s")
+                            Text(
+                                "ASIC: ${"%.2f".format(d.asicTemp ?: 0.0)}°C · " +
+                                    "VR: ${"%.2f".format(d.vrTemp ?: 0.0)}°C"
+                            )
                             Text("Severity: ${d.severity ?: "none"}")
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 Button(onClick = { onOpenDevice(d.ip) }) { Text("Detail") }
