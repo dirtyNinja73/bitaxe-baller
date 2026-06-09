@@ -51,9 +51,9 @@ fun HomeScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     var ipInput by remember { mutableStateOf("") }
     var labelInput by remember { mutableStateOf("") }
-    var savedBaseUrlApplied by remember { mutableStateOf(false) }
+    var initialRefreshComplete by remember { mutableStateOf(false) }
 
-    if (savedBaseUrlApplied) {
+    if (initialRefreshComplete) {
         DisposableEffect(vm) {
             vm.startPolling()
             onDispose { vm.stopPolling() }
@@ -64,11 +64,11 @@ fun HomeScreen(
         val savedBaseUrl = hostPrefs.baseUrl.first()
         vm.setBaseUrl(savedBaseUrl)
         vm.refreshNow()
-        savedBaseUrlApplied = true
+        initialRefreshComplete = true
     }
 
-    LaunchedEffect(ui.baseUrl, savedBaseUrlApplied) {
-        if (savedBaseUrlApplied) {
+    LaunchedEffect(ui.baseUrl, initialRefreshComplete) {
+        if (initialRefreshComplete) {
             hostPrefs.setBaseUrl(ui.baseUrl)
         }
     }
