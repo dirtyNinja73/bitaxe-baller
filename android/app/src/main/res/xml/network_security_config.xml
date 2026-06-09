@@ -17,10 +17,14 @@
     </domain-config>
 
     <!--
-        RFC 1918 LAN ranges.  Android's network-security-config does not
-        support CIDR notation, so we enumerate the common .local mDNS name
-        and representative subnets.  Users on non-standard subnets can still
-        opt in to cleartext by typing http:// explicitly in the URL field.
+        mDNS .local names (e.g. bitaxe-baller.local).  The .local pseudo-TLD
+        is reserved for link-local mDNS (RFC 6762) and is never routable over
+        the public internet, so cleartext here only travels the LAN segment.
+        Note: includeSubdomains="true" means any *.local name is permitted for
+        cleartext — this is intentional to support arbitrarily-named Bitaxe
+        mDNS hostnames, but users who want stricter isolation can hardcode the
+        exact hostname of their dashboard.  A UI warning is displayed whenever
+        the user enters an http:// URL as an additional in-app safeguard.
     -->
     <domain-config cleartextTrafficPermitted="true">
         <!-- mDNS .local hostnames (e.g. bitaxe-baller.local) -->

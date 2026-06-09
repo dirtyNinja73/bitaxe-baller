@@ -30,7 +30,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -103,7 +102,7 @@ fun HomeScreen(
                 Text(
                     text = "⚠️ HTTP is unencrypted. Use https:// unless your dashboard is on a trusted local network and does not expose sensitive data beyond your LAN.",
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color(0xFFB45309),
+                    color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
