@@ -30,6 +30,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -96,8 +97,16 @@ fun HomeScreen(
                 value = ui.baseUrl,
                 onValueChange = vm::setBaseUrl,
                 label = { Text("Dashboard base URL") },
-                supportingText = { Text("Example: http://bitaxe-baller.local or http://192.168.1.10:5050") }
+                supportingText = { Text("Example: https://bitaxe-baller.local or http://192.168.1.10:5050") }
             )
+            if (ui.baseUrl.trimStart().startsWith("http://")) {
+                Text(
+                    text = "⚠️ HTTP is unencrypted. Use https:// unless your dashboard is on a trusted local network and does not expose sensitive data beyond your LAN.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color(0xFFB45309),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Button(onClick = vm::refresh) { Text("Refresh") }

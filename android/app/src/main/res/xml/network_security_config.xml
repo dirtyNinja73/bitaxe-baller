@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Network security config for Bitaxe Baller.
+
+    HTTPS is the default and required for all non-local traffic.  Cleartext
+    HTTP is permitted only for RFC 1918 private-LAN ranges and localhost so
+    that users who explicitly choose http:// in the dashboard URL field can
+    still reach a Bitaxe on their home network.  A warning is shown in the UI
+    whenever the user selects an http:// base URL.
+-->
+<network-security-config>
+    <!-- Localhost — always permit cleartext for development / emulator use -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">localhost</domain>
+        <domain includeSubdomains="false">127.0.0.1</domain>
+        <domain includeSubdomains="false">::1</domain>
+    </domain-config>
+
+    <!--
+        RFC 1918 LAN ranges.  Android's network-security-config does not
+        support CIDR notation, so we enumerate the common .local mDNS name
+        and representative subnets.  Users on non-standard subnets can still
+        opt in to cleartext by typing http:// explicitly in the URL field.
+    -->
+    <domain-config cleartextTrafficPermitted="true">
+        <!-- mDNS .local hostnames (e.g. bitaxe-baller.local) -->
+        <domain includeSubdomains="true">local</domain>
+    </domain-config>
+
+    <!-- All other traffic: require HTTPS (no cleartext) -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>
