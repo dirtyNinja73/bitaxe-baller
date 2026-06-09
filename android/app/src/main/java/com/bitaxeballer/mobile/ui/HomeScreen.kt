@@ -59,7 +59,6 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         val savedBaseUrl = hostPrefs.baseUrl.first()
         vm.setBaseUrl(savedBaseUrl)
-        vm.refresh()
     }
 
     LaunchedEffect(ui.baseUrl) {
@@ -113,8 +112,6 @@ fun HomeScreen(
             }
             Button(onClick = {
                 vm.addDevice(ipInput, labelInput)
-                ipInput = ""
-                labelInput = ""
             }) { Text("Add") }
 
             Spacer(Modifier.height(8.dp))
