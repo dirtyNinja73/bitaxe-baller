@@ -56,14 +56,16 @@ fun HomeScreen(
     DisposableEffect(vm, savedBaseUrlApplied) {
         if (savedBaseUrlApplied) {
             vm.startPolling()
+            onDispose { vm.stopPolling() }
+        } else {
+            onDispose { }
         }
-        onDispose { vm.stopPolling() }
     }
 
     LaunchedEffect(Unit) {
         val savedBaseUrl = hostPrefs.baseUrl.first()
         vm.setBaseUrl(savedBaseUrl)
-        vm.refreshNow()
+        runCatching { vm.refreshNow() }
         savedBaseUrlApplied = true
     }
 
