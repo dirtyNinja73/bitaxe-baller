@@ -111,7 +111,10 @@ fun HomeScreen(
                 )
             }
             Button(onClick = {
-                vm.addDevice(ipInput, labelInput)
+                vm.addDevice(ipInput, labelInput) {
+                    ipInput = ""
+                    labelInput = ""
+                }
             }) { Text("Add") }
 
             Spacer(Modifier.height(8.dp))
@@ -122,7 +125,7 @@ fun HomeScreen(
                         .fillMaxWidth()
                         .clickable { onOpenDevice(d.ip) }) {
                         Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                            Text(d.label?.ifBlank { d.ip } ?: d.ip, fontWeight = FontWeight.SemiBold)
+                            Text(d.label.takeUnless { it.isNullOrBlank() } ?: d.ip, fontWeight = FontWeight.SemiBold)
                             Text("IP: ${d.ip}")
                             Text("Status: ${if (d.online) "Online" else "Offline"}")
                             Text("Hashrate: ${"%.2f".format(d.hashrate ?: 0.0)} GH/s")

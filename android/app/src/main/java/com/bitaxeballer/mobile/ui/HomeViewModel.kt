@@ -68,11 +68,12 @@ class HomeViewModel(private val repository: DeviceRepository) : ViewModel() {
             .isSuccess
     }
 
-    fun addDevice(ip: String, label: String?) {
+    fun addDevice(ip: String, label: String?, onSuccess: () -> Unit = {}) {
         viewModelScope.launch {
             try {
                 repository.addDevice(_ui.value.baseUrl, ip.trim(), label)
                 refreshInternal()
+                onSuccess()
             } catch (err: Exception) {
                 _ui.value = _ui.value.copy(error = err.message ?: "Add failed")
             }
