@@ -41,7 +41,7 @@ python app.py
 
 Then open `http://localhost:5050` (or `http://bitaxe-baller.local:5050` from any device on your LAN). With `sudo $(which python) app.py` you bind port 80 and drop the `:5050` suffix.
 
-## Android MVP scaffold (Phase 1)
+## Android Phase 1 monitoring scaffold
 
 An Android client scaffold now lives in `/android` for Phase 1 read-only monitoring work:
 
