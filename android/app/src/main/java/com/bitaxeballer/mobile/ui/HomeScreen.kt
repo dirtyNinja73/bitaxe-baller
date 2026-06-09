@@ -53,11 +53,14 @@ fun HomeScreen(
     var labelInput by remember { mutableStateOf("") }
     var initialRefreshComplete by remember { mutableStateOf(false) }
 
-    if (initialRefreshComplete) {
-        DisposableEffect(vm) {
+    LaunchedEffect(vm, initialRefreshComplete) {
+        if (initialRefreshComplete) {
             vm.startPolling()
-            onDispose { vm.stopPolling() }
         }
+    }
+
+    DisposableEffect(vm) {
+        onDispose { vm.stopPolling() }
     }
 
     LaunchedEffect(Unit) {

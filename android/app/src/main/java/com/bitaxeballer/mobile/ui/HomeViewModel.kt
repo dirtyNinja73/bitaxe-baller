@@ -3,6 +3,8 @@ package com.bitaxeballer.mobile.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.bitaxeballer.mobile.data.DEFAULT_BASE_URL
 import com.bitaxeballer.mobile.data.DeviceRepository
 import com.bitaxeballer.mobile.data.DeviceSummary
@@ -112,16 +114,11 @@ class HomeViewModel(private val repository: DeviceRepository) : ViewModel() {
         super.onCleared()
     }
 
-    companion object {
-        fun provideFactory(repository: DeviceRepository): ViewModelProvider.Factory =
-            object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
-                        return HomeViewModel(repository) as T
-                    }
-                    throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
-                }
+companion object {
+    fun provideFactory(repository: DeviceRepository): ViewModelProvider.Factory =
+    viewModelFactory {
+            initializer {
+                HomeViewModel(repository)
             }
     }
 }
