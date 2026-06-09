@@ -17,22 +17,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bitaxeballer.mobile.data.DeviceRepository
 
 @Composable
 fun DeviceDetailScreen(
     ip: String,
     repository: DeviceRepository,
+    viewModelStoreOwner: ViewModelStoreOwner,
     onBack: () -> Unit
 ) {
-    val vm = remember(ip) { DeviceDetailViewModel(repository, ip) }
+    val vm: DeviceDetailViewModel = viewModel(
+        viewModelStoreOwner = viewModelStoreOwner,
+        key = "device-$ip",
+        factory = DeviceDetailViewModel.provideFactory(repository, ip)
+    )
     val ui by vm.ui.collectAsState()
 
-    DisposableEffect(Unit) {
+    DisposableEffect(vm) {
         vm.startPolling()
         onDispose { vm.stopPolling() }
     }
@@ -62,14 +68,16 @@ fun DeviceDetailScreen(
 
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    val metrics = d.metrics
+                    val efficiency = d.efficiency
                     Text(d.label.takeUnless { it.isNullOrBlank() } ?: d.ip, fontWeight = FontWeight.SemiBold)
                     Text("Online: ${d.online}")
-                    Text("Hashrate: ${"%.2f".format(d.hashrate ?: 0.0)} GH/s")
-                    Text("ASIC temp: ${"%.2f".format(d.asicTemp ?: 0.0)}°C")
-                    Text("VR temp: ${"%.2f".format(d.vrTemp ?: 0.0)}°C")
-                    Text("Efficiency: ${"%.2f".format(d.efficiency ?: 0.0)} J/TH")
-                    Text("Frequency: ${"%.0f".format(d.frequency ?: 0.0)} MHz")
-                    Text("Core voltage: ${"%.0f".format(d.coreVoltage ?: 0.0)} mV")
+                    Text("Hashrate: ${"%.2f".format(metrics?.hashRate ?: 0.0)} GH/s")
+                    Text("ASIC temp: ${"%.2f".format(metrics?.temp ?: 0.0)}°C")
+                    Text("VR temp: ${"%.2f".format(metrics?.vrTemp ?: 0.0)}°C")
+                    Text("Efficiency: ${"%.2f".format(efficiency?.jPerTh ?: 0.0)} J/TH")
+                    Text("Frequency: ${"%.0f".format(metrics?.frequency ?: 0.0)} MHz")
+                    Text("Core voltage: ${"%.0f".format(metrics?.coreVoltage ?: 0.0)} mV")
                 }
             }
 

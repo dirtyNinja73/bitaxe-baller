@@ -1719,26 +1719,7 @@ def _dev_pro_override() -> bool:
 
 
 def is_pro_active() -> bool:
-    """Cheap check used by feature gates. Considers the locally cached state
-    only — does NOT call LS. The background validation refresh keeps the
-    cache honest. LS license keys have status "active" when valid."""
-    if _dev_pro_override():
-        return True
-    lic = _get_license()
-    if not lic or not lic.get("key") or not lic.get("activation_id"):
-        return False
-    # LS uses "active" for healthy licenses; "inactive"/"expired"/"disabled" all bad.
-    if lic.get("status") and lic["status"] != "active":
-        return False
-    expires = lic.get("expires_at")
-    if expires:
-        try:
-            # Polar returns ISO-8601 with 'Z' suffix; fromisoformat needs +00:00.
-            dt = datetime.fromisoformat(expires.replace("Z", "+00:00"))
-            if dt.timestamp() < time.time():
-                return False
-        except (ValueError, AttributeError):
-            pass
+    """Licensing is temporarily disabled; treat Pro-gated features as active."""
     return True
 
 
