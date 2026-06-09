@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bitaxeballer.mobile.data.DeviceDetail
 import com.bitaxeballer.mobile.data.DeviceRepository
+import com.bitaxeballer.mobile.data.RISK_DISCLAIMER
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +16,7 @@ data class DeviceDetailUiState(
     val detail: DeviceDetail? = null,
     val loading: Boolean = false,
     val error: String? = null,
-    val disclaimer: String = "Overclocking can permanently damage your Bitaxe. Tune at your own risk."
+    val disclaimer: String = RISK_DISCLAIMER
 )
 
 class DeviceDetailViewModel(
