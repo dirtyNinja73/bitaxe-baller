@@ -2,8 +2,10 @@ package com.bitaxeballer.mobile.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bitaxeballer.mobile.data.DEFAULT_BASE_URL
 import com.bitaxeballer.mobile.data.DeviceRepository
 import com.bitaxeballer.mobile.data.DeviceSummary
+import com.bitaxeballer.mobile.data.RISK_DISCLAIMER
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,12 +14,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 data class HomeUiState(
-    val baseUrl: String = "http://bitaxe-baller.local",
+    val baseUrl: String = DEFAULT_BASE_URL,
     val devices: List<DeviceSummary> = emptyList(),
     val loading: Boolean = false,
     val scanning: Boolean = false,
     val error: String? = null,
-    val disclaimer: String = "Overclocking can permanently damage your Bitaxe. Tune at your own risk."
+    val disclaimer: String = RISK_DISCLAIMER
 )
 
 class HomeViewModel(private val repository: DeviceRepository) : ViewModel() {

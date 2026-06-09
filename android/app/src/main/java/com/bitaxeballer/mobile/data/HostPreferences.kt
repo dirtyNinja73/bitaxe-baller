@@ -13,7 +13,7 @@ class HostPreferences(private val context: Context) {
     private val hostKey = stringPreferencesKey("dashboard_host")
 
     val baseUrl: Flow<String> = context.dataStore.data.map { prefs ->
-        prefs[hostKey] ?: "http://bitaxe-baller.local"
+        prefs[hostKey] ?: DEFAULT_BASE_URL
     }
 
     suspend fun setBaseUrl(url: String) {

@@ -8,7 +8,7 @@ import okhttp3.MediaType.Companion.toMediaType
 
 class DeviceRepository {
     @Volatile
-    private var activeBaseUrl: String = "http://bitaxe-baller.local"
+    private var activeBaseUrl: String = DEFAULT_BASE_URL
 
     private val json = Json {
         ignoreUnknownKeys = true
