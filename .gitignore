@@ -13,6 +13,10 @@ history.db-shm
 .env
 .idea/
 .vscode/
+.gradle/
+android/**/build/
+local.properties
+android/.idea/
 
 # PyInstaller build artifacts — regenerated on every build
 dist/

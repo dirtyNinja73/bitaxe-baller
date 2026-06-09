@@ -41,6 +41,18 @@ python app.py
 
 Then open `http://localhost:5050` (or `http://bitaxe-baller.local:5050` from any device on your LAN). With `sudo $(which python) app.py` you bind port 80 and drop the `:5050` suffix.
 
+## Android MVP scaffold (Phase 1)
+
+An Android client scaffold now lives in `/android` for Phase 1 read-only monitoring work:
+
+- Jetpack Compose app shell with `Home` and `Device Detail` screens
+- Retrofit + Kotlin serialization API client for `/api/devices`, `/api/device/<ip>`, add/remove, and scan flows
+- ViewModel polling loop (5s success cadence with failure backoff) for lifecycle-aware refresh
+- DataStore persistence for the configured dashboard base URL
+- Visible overclocking-risk disclaimer on both screens
+
+Open `android/` in Android Studio (Giraffe+), sync Gradle, then run on an Android 8.0+ device or emulator on the same LAN.
+
 ## Screenshots
 
 <p align="center">
