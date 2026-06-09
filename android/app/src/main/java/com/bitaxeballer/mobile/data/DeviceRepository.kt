@@ -2,9 +2,10 @@ package com.bitaxeballer.mobile.data
 
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
+import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
-import okhttp3.MediaType.Companion.toMediaType
+import java.util.concurrent.ConcurrentHashMap
 
 class DeviceRepository {
     @Volatile
@@ -16,6 +17,7 @@ class DeviceRepository {
     }
 
     private val client = OkHttpClient.Builder().build()
+    private val apiCache = ConcurrentHashMap<String, BitaxeApi>()
 
     fun setBaseUrl(url: String) {
         activeBaseUrl = normalizeBaseUrl(url)
@@ -26,13 +28,15 @@ class DeviceRepository {
     private fun normalizeBaseUrl(url: String): String = url.trim().trimEnd('/')
 
     private fun api(baseUrl: String): BitaxeApi {
-        val normalized = "${normalizeBaseUrl(baseUrl)}/"
-        return Retrofit.Builder()
-            .baseUrl(normalized)
-            .client(client)
-            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-            .build()
-            .create(BitaxeApi::class.java)
+        val normalized = normalizeBaseUrl(baseUrl)
+        return apiCache.computeIfAbsent(normalized) { cacheKey ->
+            Retrofit.Builder()
+                .baseUrl("$cacheKey/")
+                .client(client)
+                .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+                .build()
+                .create(BitaxeApi::class.java)
+        }
     }
 
     suspend fun listDevices(baseUrl: String = activeBaseUrl): List<DeviceSummary> = api(baseUrl).listDevices()

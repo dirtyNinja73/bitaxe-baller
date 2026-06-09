@@ -1,6 +1,7 @@
 package com.bitaxeballer.mobile.ui
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.bitaxeballer.mobile.data.DeviceDetail
 import com.bitaxeballer.mobile.data.DeviceRepository
@@ -56,5 +57,23 @@ class DeviceDetailViewModel(
                 _ui.value = _ui.value.copy(loading = false, error = err.message ?: "Failed")
             }
             .isSuccess
+    }
+
+    override fun onCleared() {
+        stopPolling()
+        super.onCleared()
+    }
+
+    companion object {
+        fun provideFactory(repository: DeviceRepository, ip: String): ViewModelProvider.Factory =
+            object : ViewModelProvider.Factory {
+                @Suppress("UNCHECKED_CAST")
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    if (modelClass.isAssignableFrom(DeviceDetailViewModel::class.java)) {
+                        return DeviceDetailViewModel(repository, ip) as T
+                    }
+                    throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
+                }
+            }
     }
 }

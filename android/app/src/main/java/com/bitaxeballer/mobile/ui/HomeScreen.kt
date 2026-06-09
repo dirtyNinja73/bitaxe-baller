@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bitaxeballer.mobile.data.DeviceRepository
 import com.bitaxeballer.mobile.data.HostPreferences
 import kotlinx.coroutines.flow.first
@@ -44,25 +45,32 @@ fun HomeScreen(
     onOpenDevice: (String) -> Unit
 ) {
     val context = LocalContext.current
-    val vm = remember { HomeViewModel(repository) }
+    val vm: HomeViewModel = viewModel(factory = HomeViewModel.provideFactory(repository))
     val hostPrefs = remember { HostPreferences(context) }
     val ui by vm.ui.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     var ipInput by remember { mutableStateOf("") }
     var labelInput by remember { mutableStateOf("") }
+    var savedBaseUrlApplied by remember { mutableStateOf(false) }
 
-    DisposableEffect(Unit) {
-        vm.startPolling()
+    DisposableEffect(vm, savedBaseUrlApplied) {
+        if (savedBaseUrlApplied) {
+            vm.startPolling()
+        }
         onDispose { vm.stopPolling() }
     }
 
     LaunchedEffect(Unit) {
         val savedBaseUrl = hostPrefs.baseUrl.first()
         vm.setBaseUrl(savedBaseUrl)
+        vm.refreshNow()
+        savedBaseUrlApplied = true
     }
 
-    LaunchedEffect(ui.baseUrl) {
-        hostPrefs.setBaseUrl(ui.baseUrl)
+    LaunchedEffect(ui.baseUrl, savedBaseUrlApplied) {
+        if (savedBaseUrlApplied) {
+            hostPrefs.setBaseUrl(ui.baseUrl)
+        }
     }
 
     LaunchedEffect(ui.error) {
@@ -121,6 +129,7 @@ fun HomeScreen(
             Text("Devices", fontWeight = FontWeight.Bold)
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(ui.devices, key = { it.ip }) { d ->
+                    val metrics = d.metrics
                     Card(modifier = Modifier
                         .fillMaxWidth()
                         .clickable { onOpenDevice(d.ip) }) {
@@ -128,10 +137,10 @@ fun HomeScreen(
                             Text(d.label.takeUnless { it.isNullOrBlank() } ?: d.ip, fontWeight = FontWeight.SemiBold)
                             Text("IP: ${d.ip}")
                             Text("Status: ${if (d.online) "Online" else "Offline"}")
-                            Text("Hashrate: ${"%.2f".format(d.hashrate ?: 0.0)} GH/s")
+                            Text("Hashrate: ${"%.2f".format(metrics?.hashRate ?: 0.0)} GH/s")
                             Text(
-                                "ASIC: ${"%.2f".format(d.asicTemp ?: 0.0)}°C · " +
-                                    "VR: ${"%.2f".format(d.vrTemp ?: 0.0)}°C"
+                                "ASIC: ${"%.2f".format(metrics?.temp ?: 0.0)}°C · " +
+                                    "VR: ${"%.2f".format(metrics?.vrTemp ?: 0.0)}°C"
                             )
                             Text("Severity: ${d.severity ?: "none"}")
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

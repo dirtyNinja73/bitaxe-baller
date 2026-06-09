@@ -1,6 +1,7 @@
 package com.bitaxeballer.mobile.ui
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.bitaxeballer.mobile.data.DEFAULT_BASE_URL
 import com.bitaxeballer.mobile.data.DeviceRepository
@@ -55,6 +56,8 @@ class HomeViewModel(private val repository: DeviceRepository) : ViewModel() {
         viewModelScope.launch { refreshInternal() }
     }
 
+    suspend fun refreshNow(): Boolean = refreshInternal()
+
     private suspend fun refreshInternal(): Boolean {
         _ui.value = _ui.value.copy(loading = true, error = null)
         return runCatching { repository.listDevices(_ui.value.baseUrl) }
@@ -102,5 +105,23 @@ class HomeViewModel(private val repository: DeviceRepository) : ViewModel() {
                 _ui.value = _ui.value.copy(scanning = false, error = err.message ?: "Scan failed")
             }
         }
+    }
+
+    override fun onCleared() {
+        stopPolling()
+        super.onCleared()
+    }
+
+    companion object {
+        fun provideFactory(repository: DeviceRepository): ViewModelProvider.Factory =
+            object : ViewModelProvider.Factory {
+                @Suppress("UNCHECKED_CAST")
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
+                        return HomeViewModel(repository) as T
+                    }
+                    throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
+                }
+            }
     }
 }
