@@ -53,19 +53,17 @@ fun HomeScreen(
     var labelInput by remember { mutableStateOf("") }
     var savedBaseUrlApplied by remember { mutableStateOf(false) }
 
-    DisposableEffect(vm, savedBaseUrlApplied) {
-        if (savedBaseUrlApplied) {
+    if (savedBaseUrlApplied) {
+        DisposableEffect(vm) {
             vm.startPolling()
             onDispose { vm.stopPolling() }
-        } else {
-            onDispose { }
         }
     }
 
     LaunchedEffect(Unit) {
         val savedBaseUrl = hostPrefs.baseUrl.first()
         vm.setBaseUrl(savedBaseUrl)
-        runCatching { vm.refreshNow() }
+        vm.refreshNow()
         savedBaseUrlApplied = true
     }
 
