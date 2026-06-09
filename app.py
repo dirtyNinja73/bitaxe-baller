@@ -1718,23 +1718,9 @@ def _dev_pro_override() -> bool:
     return os.environ.get("BITAXE_BALLER_DEV_PRO", "") in ("1", "true", "yes")
 
 
-# Set BITAXE_BALLER_LICENSE_ENFORCE=1 to re-enable real license-gate enforcement.
-# Default: off — all Pro features are accessible without a license key.
-# Flip this back to True (or use the env var) when ready to re-enable gating.
-_LICENSE_ENFORCE: bool = os.environ.get("BITAXE_BALLER_LICENSE_ENFORCE", "") in ("1", "true", "yes")
-
-
 def is_pro_active() -> bool:
-    """Return True when Pro features should be unlocked.
-
-    Licensing enforcement is disabled by default so all paid-only paths remain
-    fully accessible.  Set BITAXE_BALLER_LICENSE_ENFORCE=1 to re-enable real
-    license validation (checks for a valid cached activation_id + active status).
-    """
-    if not _LICENSE_ENFORCE:
-        return True
-    lic = _get_license()
-    return bool(lic.get("activation_id") and lic.get("status") == "active")
+    """All Pro features are unconditionally available — no license required."""
+    return True
 
 
 @app.route("/api/license/status", methods=["GET"])
