@@ -62,7 +62,7 @@ fun DeviceDetailScreen(
 
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text(d.label?.ifBlank { d.ip } ?: d.ip, fontWeight = FontWeight.SemiBold)
+                    Text(d.label.takeUnless { it.isNullOrBlank() } ?: d.ip, fontWeight = FontWeight.SemiBold)
                     Text("Online: ${d.online}")
                     Text("Hashrate: ${"%.2f".format(d.hashrate ?: 0.0)} GH/s")
                     Text("ASIC temp: ${"%.2f".format(d.asicTemp ?: 0.0)}°C")
