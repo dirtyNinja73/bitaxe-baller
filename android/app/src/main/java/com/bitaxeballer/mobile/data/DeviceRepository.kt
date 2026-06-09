@@ -18,13 +18,15 @@ class DeviceRepository {
     private val client = OkHttpClient.Builder().build()
 
     fun setBaseUrl(url: String) {
-        activeBaseUrl = url.trim().trimEnd('/')
+        activeBaseUrl = normalizeBaseUrl(url)
     }
 
     fun getBaseUrl(): String = activeBaseUrl
 
+    private fun normalizeBaseUrl(url: String): String = url.trim().trimEnd('/')
+
     private fun api(baseUrl: String): BitaxeApi {
-        val normalized = if (baseUrl.endsWith('/')) baseUrl else "$baseUrl/"
+        val normalized = "${normalizeBaseUrl(baseUrl)}/"
         return Retrofit.Builder()
             .baseUrl(normalized)
             .client(client)

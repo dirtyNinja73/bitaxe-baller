@@ -64,12 +64,12 @@ fun DeviceDetailScreen(
                 Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(d.label?.ifBlank { d.ip } ?: d.ip, fontWeight = FontWeight.SemiBold)
                     Text("Online: ${d.online}")
-                    Text("Hashrate: ${d.hashrate ?: 0.0}")
-                    Text("ASIC temp: ${d.asicTemp ?: 0.0}°C")
-                    Text("VR temp: ${d.vrTemp ?: 0.0}°C")
-                    Text("Efficiency: ${d.efficiency ?: 0.0} J/TH")
-                    Text("Frequency: ${d.frequency ?: 0.0} MHz")
-                    Text("Core voltage: ${d.coreVoltage ?: 0.0} mV")
+                    Text("Hashrate: ${"%.2f".format(d.hashrate ?: 0.0)} GH/s")
+                    Text("ASIC temp: ${"%.2f".format(d.asicTemp ?: 0.0)}°C")
+                    Text("VR temp: ${"%.2f".format(d.vrTemp ?: 0.0)}°C")
+                    Text("Efficiency: ${"%.2f".format(d.efficiency ?: 0.0)} J/TH")
+                    Text("Frequency: ${"%.0f".format(d.frequency ?: 0.0)} MHz")
+                    Text("Core voltage: ${"%.0f".format(d.coreVoltage ?: 0.0)} mV")
                 }
             }
 
